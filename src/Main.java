@@ -73,13 +73,21 @@ public class Main {
         String guest_contact = scan.nextLine();
         System.out.println();
 
-        String sql = "INSERT INTO reservations(guest_name, room_number, contact_number) VALUES ('"+guest_name+"',"+guest_room_no+
-                ",'"+guest_contact+"');";
+//        String sql = "INSERT INTO reservations(guest_name, room_number, contact_number) VALUES ('"+guest_name+"',"+guest_room_no+
+//                ",'"+guest_contact+"');";
 
 //        System.out.println(sql);
 
-            Statement stmt = connection.createStatement();
-            int rowsAffected = stmt.executeUpdate(sql);
+//            Statement stmt = connection.createStatement();
+//            int rowsAffected = stmt.executeUpdate(sql);
+
+            String sql = "INSERT INTO reservations(guest_name, room_number, contact_number) VALUES (?,?,?);";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1,guest_name);
+            pstmt.setInt(2,guest_room_no);
+            pstmt.setString(3,guest_contact);
+
+            int rowsAffected = pstmt.executeUpdate();
             if(rowsAffected>0){
                 System.out.println("User Register Successfully");
             } else{
@@ -133,12 +141,20 @@ public class Main {
             scan.nextLine();
             String guest_name = scan.nextLine();
 
-            String sql =
-                    "SELECT room_number FROM reservations WHERE(reservation_id="+guest_id+" AND guest_name='"+guest_name+
-                    "');";
+//            String sql =
+//                    "SELECT room_number FROM reservations WHERE(reservation_id="+guest_id+" AND guest_name='"+guest_name+
+//                    "');";
 
-            Statement stmt = connection.createStatement();
-            ResultSet resultSet = stmt.executeQuery(sql);
+//            Statement stmt = connection.createStatement();
+//            ResultSet resultSet = stmt.executeQuery(sql);
+
+            String sql = "SELECT room_number FROM reservations WHERE(reservation_id=? AND guest_name=?);";
+
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1,guest_id);
+            pstmt.setString(2,guest_name);
+
+            ResultSet resultSet = pstmt.executeQuery();
 
             resultSet.next();
             int room_number = resultSet.getInt("room_number");
@@ -173,12 +189,23 @@ public class Main {
             scan.nextLine();
             String new_contact_number = scan.nextLine();
 
-            String sql = "UPDATE reservations SET guest_name='"+new_guest_name+"', room_number = "+new_room_number+"," +
-                    "contact_number='"+new_contact_number+"' WHERE reservation_id="+res_id+";";
+//            String sql = "UPDATE reservations SET guest_name='"+new_guest_name+"', room_number = "+new_room_number+"," +
+//                    "contact_number='"+new_contact_number+"' WHERE reservation_id="+res_id+";";
 
 //            System.out.println(sql);
-            Statement stmt = connection.createStatement();
-            int rowsAffected = stmt.executeUpdate(sql);
+//            Statement stmt = connection.createStatement();
+//            int rowsAffected = stmt.executeUpdate(sql);
+
+            String sql = "UPDATE reservations SET guest_name=?, room_number=?, contact_number=? WHERE reservation_id=?;";
+
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1,new_guest_name);
+            pstmt.setInt(2,new_room_number);
+            pstmt.setString(3,new_contact_number);
+            pstmt.setInt(4,res_id);
+
+            int rowsAffected = pstmt.executeUpdate();
+
             if(rowsAffected>0){
                 System.out.println("Details Updated Successfully");
             } else {
@@ -204,9 +231,14 @@ public class Main {
             System.out.print("Enter the reservation id you want to delete: ");
             int del_res_id = scan.nextInt();
 
-            String sql = "DELETE FROM reservations WHERE reservation_id = "+del_res_id+";";
-            Statement stmt = connection.createStatement();
-            int rowsAffected = stmt.executeUpdate(sql);
+//            String sql = "DELETE FROM reservations WHERE reservation_id = "+del_res_id+";";
+//            Statement stmt = connection.createStatement();
+//            int rowsAffected = stmt.executeUpdate(sql);
+
+            String sql = "DELETE FROM reservations WHERE reservation_id = ?;";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1,del_res_id);
+            int rowsAffected = pstmt.executeUpdate();
             if(rowsAffected>0){
                 System.out.println("Details Deleted Successfully");
             } else {
